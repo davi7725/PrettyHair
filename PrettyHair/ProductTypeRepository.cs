@@ -36,9 +36,24 @@ namespace PrettyHair
             listOfProducts[id].Price = price;
         }
 
-        public void ChangeAmount(int amount, int id)
+        public void SubtractToAmount(int amount, int id)
         {
             listOfProducts[id].Amount = listOfProducts[id].Amount - amount;
+        }
+
+        public void ChangeAmount(int amount, int id)
+        {
+            listOfProducts[id].Amount = amount;
+        }
+
+        public void ChangeDescription(string description, int id)
+        {
+            listOfProducts[id].Description = description;
+        }
+
+        public Dictionary<int,ProductType> GetProductTypes()
+        {
+            return listOfProducts;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace PrettyHairTest
 
             Order loadedOrder = repoOr.Load(1);
 
-            Assert.AreEqual(4, loadedOrder.OrderLine.orderLinesProducts[1]);
+            Assert.AreEqual(4, loadedOrder.OrderLine.OrderLinesProducts[1]);
         }
 
         [TestMethod]
@@ -115,7 +115,7 @@ namespace PrettyHairTest
 
             Order loadedOrder = repoOr.Load(1);
 
-            Assert.AreEqual(4, loadedOrder.OrderLine.orderLinesProducts[1]);
+            Assert.AreEqual(4, loadedOrder.OrderLine.OrderLinesProducts[1]);
             Assert.AreEqual(5, hairSpray.Amount);
         }
 
@@ -130,7 +130,6 @@ namespace PrettyHairTest
             Customer ben = repoCu.Create(1, "Ben Smith Maybe", "Praceta Ribeiro Sanches, nº 89");
 
             Customer loadedCustomer = repoCu.Load(1);
-
             Assert.AreEqual("Ben Smith Maybe", loadedCustomer.Name);
         }
 

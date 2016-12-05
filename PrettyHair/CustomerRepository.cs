@@ -29,7 +29,10 @@ namespace PrettyHair
 
         public Customer Load(int id)
         {
-            return listOfCustomers[id];
+            if (listOfCustomers.ContainsKey(id))
+                return listOfCustomers[id];
+            else
+                return new Customer();
         }
 
         public void Remove(int id)

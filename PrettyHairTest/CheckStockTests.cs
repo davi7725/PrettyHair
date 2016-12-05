@@ -98,7 +98,7 @@ namespace PrettyHairTest
             ProductType dryer = repo.CreateProduct(1, 263.00, "Very stronk pink hair dryer!!", 50);
             repo.ChangeAmount(49, 1);
 
-            Assert.AreEqual(1, dryer.Amount);
+            Assert.AreEqual(49, dryer.Amount);
         }
     }
 }
