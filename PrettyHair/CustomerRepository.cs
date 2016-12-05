@@ -26,5 +26,20 @@ namespace PrettyHair
             listOfCustomers.Add(id, customer);
             return customer;
         }
+
+        public Customer Load(int id)
+        {
+            return listOfCustomers[id];
+        }
+
+        public void Remove(int id)
+        {
+            listOfCustomers.Remove(id);
+        }
+
+        public void ChangeAddress(string newAddress, int id)
+        {
+            listOfCustomers[id].Address = newAddress;
+        }
     }
 }

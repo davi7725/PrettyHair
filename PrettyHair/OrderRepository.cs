@@ -20,11 +20,33 @@ namespace PrettyHair
             return listOfOrders.Count;
         }
 
-        public Order InsertOrder(int customerId, DateTime date, DateTime deliveryDate, int id, int quantity)
+        public int CountOrders(int customerId)
         {
-            Order order = new Order(id, date, deliveryDate, quantity, customerId);
-            listOfOrders.Add(id, order);
+            int countOrders = 0;
+            foreach (Order order in listOfOrders.Values)
+            {
+                if (order.CustomerId == customerId)
+                {
+                    countOrders++;
+                }
+            }
+            return countOrders;
+        }
+
+        public Order InsertOrder(int customerId, DateTime date, DateTime deliveryDate, int orderId, List<int> quantity, List<int> productTypeId, ProductTypeRepository repoPr)
+        {
+            Order order = new Order(orderId, date, deliveryDate, productTypeId, quantity, customerId);
+            for (int i = 0; i < productTypeId.Count; i++)
+            {
+                repoPr.ChangeAmount(quantity[i], productTypeId[i]);
+            }
+            listOfOrders.Add(orderId, order);
             return order;
+        }
+
+        public Order Load(int orderId)
+        {
+            return listOfOrders[orderId];
         }
     }
 }

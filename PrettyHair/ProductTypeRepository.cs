@@ -38,7 +38,7 @@ namespace PrettyHair
 
         public void ChangeAmount(int amount, int id)
         {
-            listOfProducts[id].Amount = amount;
+            listOfProducts[id].Amount = listOfProducts[id].Amount - amount;
         }
     }
 }
