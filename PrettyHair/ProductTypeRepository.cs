@@ -55,5 +55,39 @@ namespace PrettyHair
         {
             return listOfProducts;
         }
+
+        public bool CheckIfProductExists(int productTypeId)
+        {
+            return listOfProducts.ContainsKey(productTypeId);
+        }
+
+        public int AddStock(int productTypeId, int amount)
+        {
+            int newAmount;
+            if(CheckIfProductExists(productTypeId) == false || amount < 0)
+            {
+                newAmount = -1;
+            }
+            else
+            {
+                listOfProducts[productTypeId].Amount = listOfProducts[productTypeId].Amount + amount;
+                newAmount = listOfProducts[productTypeId].Amount;
+            }
+            return newAmount;
+        }
+
+        public bool CheckAmountOfProductsInOrder(Order ord)
+        {
+            bool haveEnoughProducts = true;
+            for(int i = 0; i<ord.OrderLine.OrderLinesProducts.Count; i++)
+            {
+                
+                if (ord.OrderLine.OrderLinesQuantity[i] > listOfProducts[ord.OrderLine.OrderLinesProducts[i]].Amount)
+                {
+                    haveEnoughProducts = false;
+                }
+            }
+            return haveEnoughProducts;
+        }
     }
 }

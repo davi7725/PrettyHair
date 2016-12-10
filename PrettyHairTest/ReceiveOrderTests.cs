@@ -87,39 +87,6 @@ namespace PrettyHairTest
         }
 
         [TestMethod]
-        public void RemoveQuantityFromProductTypeOnOrder()
-        {
-            CustomerRepository repoCu = CreateRepositoryCu();
-            repoCu.Clear();
-            OrderRepository repoOr = CreateRepositoryOr();
-            repoOr.Clear();
-
-            Assert.AreEqual(0, repoCu.CountCustomers());
-            Assert.AreEqual(0, repoOr.CountOrders());
-
-            List<int> productsId = new List<int>();
-            List<int> productsQuantity = new List<int>();
-
-            ProductTypeRepository repoPr = new ProductTypeRepository();
-
-            ProductType hairSpray = repoPr.CreateProduct(3, 68.00, "Supah stronk hair spray!", 10);
-            ProductType hairStraightener = repoPr.CreateProduct(4, 172.62, "Very powerfull straightener for hair!", 30);
-
-            productsId.Add(hairSpray.Id);
-            productsQuantity.Add(5);
-
-            productsId.Add(hairStraightener.Id);
-            productsQuantity.Add(10);
-
-            repoOr.InsertOrder(1, new DateTime(2015, 6, 10), new DateTime(2015, 7, 10), 1, productsQuantity, productsId, repoPr);
-
-            Order loadedOrder = repoOr.Load(1);
-
-            Assert.AreEqual(4, loadedOrder.OrderLine.OrderLinesProducts[1]);
-            Assert.AreEqual(5, hairSpray.Amount);
-        }
-
-        [TestMethod]
         public void LoadCustomer()
         {
             CustomerRepository repoCu = CreateRepositoryCu();

@@ -36,10 +36,6 @@ namespace PrettyHair
         public Order InsertOrder(int customerId, DateTime date, DateTime deliveryDate, int orderId, List<int> quantity, List<int> productTypeId, ProductTypeRepository repoPr)
         {
             Order order = new Order(orderId, date, deliveryDate, productTypeId, quantity, customerId);
-            for (int i = 0; i < productTypeId.Count; i++)
-            {
-                repoPr.ChangeAmount(quantity[i], productTypeId[i]);
-            }
             listOfOrders.Add(orderId, order);
             return order;
         }
@@ -47,6 +43,48 @@ namespace PrettyHair
         public Order Load(int orderId)
         {
             return listOfOrders[orderId];
+        }
+
+        public void Register(int orderId, ProductTypeRepository repoPr)
+        {
+            for(int i = 0; i < listOfOrders[orderId].OrderLine.OrderLinesProducts.Count; i++)
+            {
+                int quantityToRemoveFromStock = listOfOrders[orderId].OrderLine.OrderLinesQuantity[i];
+                repoPr.SubtractToAmount(quantityToRemoveFromStock, listOfOrders[orderId].OrderLine.OrderLinesProducts[i]);
+            }
+            listOfOrders[orderId].Registered = true;
+        }
+
+        public List<Order> CheckOrders(DateTime date, ProductTypeRepository repoPr)
+        {
+            List<Order> ordersOfThisDate = new List<Order>();
+            foreach (Order ord in listOfOrders.Values)
+            {
+                if (date == ord.Date)
+                {
+                    if (repoPr.CheckAmountOfProductsInOrder(ord) == true)
+                    {
+                        ordersOfThisDate.Add(ord);
+                    }
+                    else
+                    {
+                        string email = BuildEmail(ord, repoPr);
+                    }
+                }
+
+            }
+
+            return ordersOfThisDate;
+        }
+
+        public string BuildEmail(Order ord, ProductTypeRepository repoPr)
+        {
+            string text = "Id:" + ord.Id + "\nProducts:";
+            for (int i = 0; i < ord.OrderLine.OrderLinesProducts.Count; i++)
+            {
+                text = text + "\n" + ord.OrderLine.OrderLinesProducts[i] + " - " + repoPr.GetProductTypes()[ord.OrderLine.OrderLinesProducts[i]].Description + " - " + ord.OrderLine.OrderLinesQuantity + " - " + repoPr.GetProductTypes()[ord.OrderLine.OrderLinesProducts[i]].Amount;
+            }
+            return text;
         }
     }
 }

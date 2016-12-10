@@ -13,7 +13,9 @@ namespace PrettyHair
         public DateTime DeliveryDate { get; set; }
         public int CustomerId { get; set; }
         public OrderLine OrderLine { get; set; }
+        public bool Registered { get; set; }
         public Order() { }
+
         public Order(int id, DateTime date, DateTime deliveryDate, List<int> productTypeId, List<int> quantity, int customerId)
         {
             Id = id;
@@ -23,5 +25,6 @@ namespace PrettyHair
             OrderLine = new OrderLine();
             OrderLine.Add(productTypeId, quantity);
         }
+        
     }
 }
