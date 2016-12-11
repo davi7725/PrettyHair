@@ -86,5 +86,10 @@ namespace PrettyHair
             }
             return text;
         }
+
+        public int NewOrderNumber()
+        {
+            return listOfOrders.Count+1;
+        }
     }
 }
