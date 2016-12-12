@@ -9,19 +9,15 @@ namespace PrettyHair
 {
     public class OrderLine
     {
-        public List<int> OrderLinesProducts { get; set; }
-        public List<int> OrderLinesQuantity { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
 
-        public OrderLine()
-        {
-            OrderLinesProducts = new List<int>();
-            OrderLinesQuantity = new List<int>();
-        }
+        public OrderLine() { }
 
-        internal void Add(List<int> productTypeId, List<int> quantity)
+        public OrderLine(int productId, int quantity)
         {
-            OrderLinesProducts.AddRange(productTypeId);
-            OrderLinesQuantity.AddRange(quantity);
+            ProductId = productId;
+            Quantity = quantity;
         }
     }
 }

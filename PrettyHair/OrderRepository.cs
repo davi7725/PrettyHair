@@ -47,10 +47,10 @@ namespace PrettyHair
 
         public void Register(int orderId, ProductTypeRepository repoPr)
         {
-            for(int i = 0; i < listOfOrders[orderId].OrderLine.OrderLinesProducts.Count; i++)
+            for(int i = 0; i < listOfOrders[orderId].ListOfOrderLines.Count; i++)
             {
-                int quantityToRemoveFromStock = listOfOrders[orderId].OrderLine.OrderLinesQuantity[i];
-                repoPr.SubtractToAmount(quantityToRemoveFromStock, listOfOrders[orderId].OrderLine.OrderLinesProducts[i]);
+                int quantityToRemoveFromStock = listOfOrders[orderId].ListOfOrderLines[i].Quantity;
+                repoPr.SubtractToAmount(quantityToRemoveFromStock, listOfOrders[orderId].ListOfOrderLines[i].ProductId);
             }
             listOfOrders[orderId].Registered = true;
         }
@@ -60,7 +60,7 @@ namespace PrettyHair
             List<Order> ordersOfThisDate = new List<Order>();
             foreach (Order ord in listOfOrders.Values)
             {
-                if (date == ord.Date)
+                if (date.ToString("yyyy-MM-dd") == ord.Date.ToString("yyyy-MM-dd"))
                 {
                     if (repoPr.CheckAmountOfProductsInOrder(ord) == true)
                     {
@@ -80,9 +80,9 @@ namespace PrettyHair
         public string BuildEmail(Order ord, ProductTypeRepository repoPr)
         {
             string text = "Id:" + ord.Id + "\nProducts:";
-            for (int i = 0; i < ord.OrderLine.OrderLinesProducts.Count; i++)
+            for (int i = 0; i < ord.ListOfOrderLines.Count; i++)
             {
-                text = text + "\n" + ord.OrderLine.OrderLinesProducts[i] + " - " + repoPr.GetProductTypes()[ord.OrderLine.OrderLinesProducts[i]].Description + " - " + ord.OrderLine.OrderLinesQuantity + " - " + repoPr.GetProductTypes()[ord.OrderLine.OrderLinesProducts[i]].Amount;
+                text = text + "\n" + ord.ListOfOrderLines[i].ProductId + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].ProductId].Description + " - " + ord.ListOfOrderLines[i].Quantity + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].ProductId].Amount;
             }
             return text;
         }
@@ -90,6 +90,11 @@ namespace PrettyHair
         public int NewOrderNumber()
         {
             return listOfOrders.Count+1;
+        }
+
+        public Dictionary<int,Order> GetListOfOrders()
+        {
+            return listOfOrders;
         }
     }
 }

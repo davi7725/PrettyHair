@@ -79,10 +79,10 @@ namespace PrettyHair
         public bool CheckAmountOfProductsInOrder(Order ord)
         {
             bool haveEnoughProducts = true;
-            for(int i = 0; i<ord.OrderLine.OrderLinesProducts.Count; i++)
+            for(int i = 0; i<ord.ListOfOrderLines.Count; i++)
             {
                 
-                if (ord.OrderLine.OrderLinesQuantity[i] > listOfProducts[ord.OrderLine.OrderLinesProducts[i]].Amount)
+                if (ord.ListOfOrderLines[i].Quantity > listOfProducts[ord.ListOfOrderLines[i].ProductId].Amount)
                 {
                     haveEnoughProducts = false;
                 }

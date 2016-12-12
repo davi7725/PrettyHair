@@ -32,7 +32,7 @@ namespace PrettyHair
             if (listOfCustomers.ContainsKey(id))
                 return listOfCustomers[id];
             else
-                return new Customer();
+                return null;
         }
 
         public void Remove(int id)
@@ -44,5 +44,16 @@ namespace PrettyHair
         {
             listOfCustomers[id].Address = newAddress;
         }
+
+        public Dictionary<int,Customer> GetListOfCustomers()
+        {
+            return listOfCustomers;
+        }
+
+        public int NewCustomerId()
+        {
+            return listOfCustomers.Count + 1;
+        }
+
     }
 }

@@ -148,7 +148,7 @@ namespace PrettyHairTest
 
             Assert.IsFalse(newOrder.Registered);
 
-            repoOr.Register(1, repoPr);
+            repoOr.Register(1,repoPr);
 
             Assert.IsTrue(newOrder.Registered);
             Assert.AreEqual(11, conditioner.Amount);

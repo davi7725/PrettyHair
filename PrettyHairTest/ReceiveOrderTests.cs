@@ -83,7 +83,7 @@ namespace PrettyHairTest
 
             Order loadedOrder = repoOr.Load(1);
 
-            Assert.AreEqual(4, loadedOrder.OrderLine.OrderLinesProducts[1]);
+            Assert.AreEqual(4, loadedOrder.ListOfOrderLines[1].ProductId);
         }
 
         [TestMethod]
