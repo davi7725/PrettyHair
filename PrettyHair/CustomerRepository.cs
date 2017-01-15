@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace PrettyHair
 {
@@ -45,10 +41,22 @@ namespace PrettyHair
             listOfCustomers[id].Address = newAddress;
         }
 
-        public Dictionary<int,Customer> GetListOfCustomers()
+        public Dictionary<int, Customer> GetListOfCustomers()
         {
             return listOfCustomers;
         }
+
+        public Dictionary<int, IUi> GetCustomersAsIUi()
+        {
+            Dictionary<int, IUi> dictionaryOfCustomersIUi = new Dictionary<int, PrettyHair.IUi>();
+            foreach (KeyValuePair<int, Customer> kvpCustomer in listOfCustomers)
+            {
+                dictionaryOfCustomersIUi.Add(kvpCustomer.Key, (IUi)kvpCustomer.Value);
+            }
+
+            return dictionaryOfCustomersIUi;
+        }
+
 
         public int NewCustomerId()
         {

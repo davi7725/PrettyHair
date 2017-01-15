@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace PrettyHair
 {
-    public class ProductType
+    public class ProductType : IUi
     {
+        public int Id { get; set; }
+        public double Price { get; set; }
+        public string Description { get; set; }
+        public int Amount { get; set; }
         public ProductType()
         {
 
@@ -21,9 +25,9 @@ namespace PrettyHair
             Amount = amount;
         }
 
-        public int Id { get; set; }
-        public double Price { get; set; }
-        public string Description { get; set; }
-        public int Amount { get; set; }
+        public override string ToString()
+        {
+            return Id + " - " + Description + " - " + Price + " - " + Amount;
+        }
     }
 }

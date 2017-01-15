@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrettyHair
+﻿namespace PrettyHair
 {
-    public class Customer
+    public class Customer : IUi
     {
-        public Customer() { }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public OrderRepository OrderRepository { get; set; }
+
+        public Customer() {
+            OrderRepository = new OrderRepository();
+        }
         public Customer(int id, string name, string address)
         {
             Id = id;
             Name = name;
             Address = address;
+            OrderRepository = new OrderRepository();
         }
 
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
+        public override string ToString()
+        {
+            return Id + " - " + Name + " - " + Address;
+        }
     }
 }

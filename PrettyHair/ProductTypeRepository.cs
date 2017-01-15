@@ -39,6 +39,7 @@ namespace PrettyHair
         public void SubtractToAmount(int amount, int id)
         {
             listOfProducts[id].Amount = listOfProducts[id].Amount - amount;
+            DB.ChangeProductAmount(id, listOfProducts[id].Amount);
         }
 
         public void ChangeAmount(int amount, int id)
@@ -54,6 +55,17 @@ namespace PrettyHair
         public Dictionary<int,ProductType> GetProductTypes()
         {
             return listOfProducts;
+        }
+
+        public Dictionary<int,IUi> GetProductAsIUi()
+        {
+            Dictionary<int, IUi> dictionaryOfProductsIUi = new Dictionary<int, PrettyHair.IUi>();
+            foreach(KeyValuePair<int,ProductType> kvpProducts in listOfProducts)
+            {
+                dictionaryOfProductsIUi.Add(kvpProducts.Key, (IUi)kvpProducts.Value);
+            }
+
+            return dictionaryOfProductsIUi;
         }
 
         public bool CheckIfProductExists(int productTypeId)
@@ -82,12 +94,20 @@ namespace PrettyHair
             for(int i = 0; i<ord.ListOfOrderLines.Count; i++)
             {
                 
-                if (ord.ListOfOrderLines[i].Quantity > listOfProducts[ord.ListOfOrderLines[i].ProductId].Amount)
+                if (ord.ListOfOrderLines[i].Quantity > listOfProducts[ord.ListOfOrderLines[i].Product.Id].Amount)
                 {
                     haveEnoughProducts = false;
                 }
             }
             return haveEnoughProducts;
+        }
+
+        internal void RemoveProductsFromOrder(List<OrderLine> listOfOrderLines)
+        {
+            for (int i = 0; i < listOfOrderLines.Count; i++)
+            {
+                SubtractToAmount(listOfOrderLines[i].Quantity, listOfOrderLines[i].Product.Id);
+            }
         }
     }
 }

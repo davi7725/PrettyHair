@@ -10,6 +10,9 @@ namespace PrettyHair
     {
         Dictionary<int, Order> listOfOrders = new Dictionary<int, Order>();
 
+        public event OnOrderReadyToPackHandler orderReadyToPack;
+        public event OnAmountNotEnoughHandler orderAmountNotEnough;
+
         public void Clear()
         {
             listOfOrders.Clear();
@@ -25,7 +28,7 @@ namespace PrettyHair
             int countOrders = 0;
             foreach (Order order in listOfOrders.Values)
             {
-                if (order.CustomerId == customerId)
+                if (order.Customer.Id == customerId)
                 {
                     countOrders++;
                 }
@@ -33,9 +36,10 @@ namespace PrettyHair
             return countOrders;
         }
 
-        public Order InsertOrder(int customerId, DateTime date, DateTime deliveryDate, int orderId, List<int> quantity, List<int> productTypeId, ProductTypeRepository repoPr)
+        public Order InsertOrder(Customer customer, DateTime date, DateTime deliveryDate, int orderId, List<int> quantity, List<ProductType> productTypes, bool registered, ProductTypeRepository repoPr)
         {
-            Order order = new Order(orderId, date, deliveryDate, productTypeId, quantity, customerId);
+            Order order = new Order(orderId, date, deliveryDate, productTypes, quantity, customer);
+            order.Registered = registered;
             listOfOrders.Add(orderId, order);
             return order;
         }
@@ -50,7 +54,7 @@ namespace PrettyHair
             for(int i = 0; i < listOfOrders[orderId].ListOfOrderLines.Count; i++)
             {
                 int quantityToRemoveFromStock = listOfOrders[orderId].ListOfOrderLines[i].Quantity;
-                repoPr.SubtractToAmount(quantityToRemoveFromStock, listOfOrders[orderId].ListOfOrderLines[i].ProductId);
+                repoPr.SubtractToAmount(quantityToRemoveFromStock, listOfOrders[orderId].ListOfOrderLines[i].Product.Id);
             }
             listOfOrders[orderId].Registered = true;
         }
@@ -65,10 +69,23 @@ namespace PrettyHair
                     if (repoPr.CheckAmountOfProductsInOrder(ord) == true)
                     {
                         ordersOfThisDate.Add(ord);
+                        OnOrderReadyToPackEventArgs args = new OnOrderReadyToPackEventArgs();
+                        string email = BuildEmailReadyToPackOrder(ord, repoPr);
+                        args.EmailMessage = email;
+                        if (orderReadyToPack != null)
+                        {
+                            orderReadyToPack(this, args);
+                        }
                     }
                     else
                     {
-                        string email = BuildEmail(ord, repoPr);
+                        string email = BuildEmailNotEnoughStock(ord, repoPr);
+                        OnAmountNotEnoughEventArgs args = new OnAmountNotEnoughEventArgs();
+                        args.EmailMessage = email;
+                        if(orderAmountNotEnough != null)
+                        {
+                            orderAmountNotEnough(this, args);
+                        }
                     }
                 }
 
@@ -77,12 +94,22 @@ namespace PrettyHair
             return ordersOfThisDate;
         }
 
-        public string BuildEmail(Order ord, ProductTypeRepository repoPr)
+        public string BuildEmailReadyToPackOrder(Order ord, ProductTypeRepository repoPr)
         {
             string text = "Id:" + ord.Id + "\nProducts:";
             for (int i = 0; i < ord.ListOfOrderLines.Count; i++)
             {
-                text = text + "\n" + ord.ListOfOrderLines[i].ProductId + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].ProductId].Description + " - " + ord.ListOfOrderLines[i].Quantity + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].ProductId].Amount;
+                text = text + "\n" + ord.ListOfOrderLines[i].Product.Id + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].Product.Id].Description + " - " + ord.ListOfOrderLines[i].Quantity;
+            }
+            return text;
+        }
+
+        public string BuildEmailNotEnoughStock(Order ord, ProductTypeRepository repoPr)
+        {
+            string text = "Id:" + ord.Id + "\nProducts:";
+            for (int i = 0; i < ord.ListOfOrderLines.Count; i++)
+            {
+                text = text + "\n" + ord.ListOfOrderLines[i].Product.Id + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].Product.Id].Description + " - " + ord.ListOfOrderLines[i].Quantity + " - " + repoPr.GetProductTypes()[ord.ListOfOrderLines[i].Product.Id].Amount;
             }
             return text;
         }
@@ -95,6 +122,30 @@ namespace PrettyHair
         public Dictionary<int,Order> GetListOfOrders()
         {
             return listOfOrders;
+        }
+
+        public Dictionary<int, IUi> GetOrdersAsIUi()
+        {
+            Dictionary<int, IUi> dictionaryOfOrdersIUi = new Dictionary<int, PrettyHair.IUi>();
+            foreach (KeyValuePair<int, Order> kvpOrder in listOfOrders)
+            {
+                dictionaryOfOrdersIUi.Add(kvpOrder.Key, (IUi)kvpOrder.Value);
+            }
+
+            return dictionaryOfOrdersIUi;
+        }
+
+        internal List<Order> GetListOfNonRegisteredOrders()
+        {
+            List<Order> listOfNonRegisteredOrders = new List<Order>();
+            foreach(Order ord in listOfOrders.Values)
+            {
+                if(ord.Registered == false)
+                {
+                    listOfNonRegisteredOrders.Add(ord);
+                }
+            }
+            return listOfNonRegisteredOrders;
         }
     }
 }

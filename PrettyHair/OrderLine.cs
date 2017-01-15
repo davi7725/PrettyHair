@@ -7,17 +7,22 @@ using System.Collections;
 
 namespace PrettyHair
 {
-    public class OrderLine
+    public class OrderLine : IUi
     {
-        public int ProductId { get; set; }
+        public ProductType Product { get; set; }
         public int Quantity { get; set; }
 
         public OrderLine() { }
 
-        public OrderLine(int productId, int quantity)
+        public OrderLine(ProductType product, int quantity)
         {
-            ProductId = productId;
+            Product = product;
             Quantity = quantity;
+        }
+
+        public override string ToString()
+        {
+            return "\t" + Product.Description + " - " + Quantity;
         }
     }
 }
